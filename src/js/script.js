@@ -4,18 +4,13 @@
 // ============================================
 
 const chatMessages = document.getElementById("chat-messages");
-
 const userInput = document.getElementById("user-input");
-
 const sendButton = document.getElementById("send-button");
 
 
 // ============================================
 // 2. STORE CONVERSATION HISTORY
 // ============================================
-
-// This array stores messages during the current session.
-// It is not permanently saved.
 
 let conversationHistory = [];
 
@@ -26,42 +21,59 @@ let conversationHistory = [];
 
 function displayMessage(sender, message) {
 
-    // Create a new message container
     const messageElement = document.createElement("div");
 
-    // Create sender label
     const labelElement = document.createElement("span");
 
     labelElement.classList.add("message-label");
 
-    // Set the appropriate CSS class
     if (sender === "user") {
 
         messageElement.classList.add("message", "user-message");
-
         labelElement.textContent = "You";
 
     } else {
 
         messageElement.classList.add("message", "ai-message");
-
         labelElement.textContent = "AI Assistant";
     }
 
-    // Create message content
     const contentElement = document.createElement("div");
 
-    contentElement.textContent = message;
+    contentElement.classList.add("message-content");
 
-    // Add label and content to message container
+    // User messages are displayed as plain text.
+    if (sender === "user") {
+
+        contentElement.textContent = message;
+
+    } else {
+
+        // Convert AI Markdown into formatted HTML.
+        // DOMPurify sanitizes the HTML before displaying it.
+        if (window.marked && window.DOMPurify) {
+
+            const formattedHTML = marked.parse(message, {
+                breaks: true,
+                gfm: true
+            });
+
+            contentElement.innerHTML = DOMPurify.sanitize(formattedHTML);
+
+        } else {
+
+            // Safe fallback if the libraries fail to load.
+            contentElement.textContent = message;
+
+            console.error("Markdown libraries could not be loaded.");
+        }
+    }
+
     messageElement.appendChild(labelElement);
-
     messageElement.appendChild(contentElement);
 
-    // Add message to chat area
     chatMessages.appendChild(messageElement);
 
-    // Scroll to the latest message
     scrollToBottom();
 }
 
@@ -143,37 +155,28 @@ function displayError(message) {
 
 async function sendMessage() {
 
-    // Read and remove unnecessary spaces
     const message = userInput.value.trim();
 
-    // Do not send an empty message
     if (message === "") {
         return;
     }
 
-    // Prevent multiple requests at the same time
     sendButton.disabled = true;
-
     userInput.disabled = true;
 
-    // Display the user's message
     displayMessage("user", message);
 
-    // Add user message to conversation history
     conversationHistory.push({
         role: "user",
         content: message
     });
 
-    // Clear the input box
     userInput.value = "";
 
-    // Show loading animation
     showLoading();
 
     try {
 
-        // Send conversation history to backend
         const response = await fetch("/api/chat", {
 
             method: "POST",
@@ -187,12 +190,8 @@ async function sendMessage() {
             })
         });
 
-
-        // Convert response into JavaScript object
         const data = await response.json();
 
-
-        // Check for backend or API errors
         if (!response.ok) {
 
             throw new Error(
@@ -200,22 +199,16 @@ async function sendMessage() {
             );
         }
 
-
-        // Check whether the AI response exists
         if (typeof data.reply !== "string" || !data.reply.trim()) {
 
             throw new Error("The AI returned an invalid response.");
         }
 
-
-        // Store the AI response in conversation history
         conversationHistory.push({
             role: "assistant",
             content: data.reply
         });
 
-
-        // Display AI response
         displayMessage("assistant", data.reply);
 
     }
@@ -224,8 +217,6 @@ async function sendMessage() {
 
         console.error("Chatbot error:", error);
 
-        // Remove the failed user message from history.
-        // This allows the user to retry without duplicating it.
         conversationHistory.pop();
 
         displayError(
@@ -236,15 +227,11 @@ async function sendMessage() {
 
     finally {
 
-        // Always remove loading animation
         removeLoading();
 
-        // Enable the input and button again
         sendButton.disabled = false;
-
         userInput.disabled = false;
 
-        // Return cursor to input box
         userInput.focus();
     }
 }

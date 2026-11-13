@@ -51,6 +51,7 @@ body {
     display: flex;
     align-items: center;
     gap: 14px;
+    flex-shrink: 0;
 }
 
 .bot-icon {
@@ -82,8 +83,11 @@ body {
 
 .chat-messages {
     flex: 1;
+    min-height: 0;
+    min-width: 0;
     padding: 25px;
     overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -112,12 +116,15 @@ body {
 
 .message {
     max-width: 75%;
+    min-width: 0;
+    flex-shrink: 0;
     padding: 13px 17px;
     border-radius: 14px;
     font-size: 15px;
     line-height: 1.6;
     overflow-wrap: anywhere;
     white-space: pre-wrap;
+    box-sizing: border-box;
 }
 
 /* User message */
@@ -135,7 +142,6 @@ body {
     align-self: flex-start;
     background: #e8f0fe;
     color: #263238;
-    border-bottom-left-radius: 4px;
 }
 
 
@@ -153,7 +159,119 @@ body {
 
 
 /* =====================================
-   7. LOADING INDICATOR
+   7. AI MESSAGE MARKDOWN FORMATTING
+===================================== */
+
+.message-content {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    line-height: 1.6;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+.message-content p {
+    margin: 8px 0;
+    overflow-wrap: anywhere;
+}
+
+.message-content h1,
+.message-content h2,
+.message-content h3,
+.message-content h4 {
+    margin: 14px 0 8px;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+.message-content ul,
+.message-content ol {
+    padding-left: 24px;
+    margin: 8px 0;
+}
+
+.message-content li {
+    margin: 5px 0;
+    overflow-wrap: anywhere;
+}
+
+.message-content strong {
+    font-weight: 700;
+}
+
+.message-content em {
+    font-style: italic;
+}
+
+/* Tables */
+
+.message-content table {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    overflow-x: auto;
+}
+
+.message-content th,
+.message-content td {
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+    text-align: left;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.message-content th {
+    font-weight: 700;
+}
+
+/* Code blocks */
+
+.message-content pre {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    background: #f1f1f1;
+    margin: 10px 0;
+}
+
+.message-content pre code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* Inline code */
+
+.message-content code {
+    font-family: monospace;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* Blockquotes */
+
+.message-content blockquote {
+    border-left: 3px solid #8ab4f8;
+    padding-left: 12px;
+    margin: 10px 0;
+    overflow-wrap: anywhere;
+}
+
+
+/* =====================================
+   8. LOADING INDICATOR
 ===================================== */
 
 .loading-message {
@@ -164,6 +282,7 @@ body {
     border-radius: 14px;
     border-bottom-left-radius: 4px;
     font-size: 14px;
+    flex-shrink: 0;
 }
 
 .typing-dots {
@@ -202,7 +321,7 @@ body {
 
 
 /* =====================================
-   8. INPUT AREA
+   9. INPUT AREA
 ===================================== */
 
 .chat-input-area {
@@ -212,10 +331,12 @@ body {
     padding: 18px;
     background: #ffffff;
     border-top: 1px solid #e5e7eb;
+    flex-shrink: 0;
 }
 
 #user-input {
     flex: 1;
+    min-width: 0;
     padding: 14px 16px;
     border: 1px solid #d1d5db;
     border-radius: 25px;
@@ -243,6 +364,7 @@ body {
     font-weight: bold;
     cursor: pointer;
     transition: background 0.2s;
+    flex-shrink: 0;
 }
 
 #send-button:hover {
@@ -256,7 +378,7 @@ body {
 
 
 /* =====================================
-   9. ERROR MESSAGE
+   10. ERROR MESSAGE
 ===================================== */
 
 .error-message {
@@ -269,11 +391,13 @@ body {
     border-radius: 8px;
     font-size: 13px;
     text-align: center;
+    overflow-wrap: anywhere;
+    flex-shrink: 0;
 }
 
 
 /* =====================================
-   10. MOBILE RESPONSIVENESS
+   11. MOBILE RESPONSIVENESS
 ===================================== */
 
 @media (max-width: 600px) {
