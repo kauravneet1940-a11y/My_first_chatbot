@@ -1,5 +1,6 @@
 
 export default async function handler(req, res) {
+
     // 1. Allow POST requests only
     if (req.method !== "POST") {
         res.setHeader("Allow", "POST");
@@ -10,12 +11,9 @@ export default async function handler(req, res) {
     }
 
     try {
+
         // 2. Check whether the Groq API key exists
         const apiKey = process.env.GROQ_API_KEY;
-        console.log(
-    "Groq API key loaded:",
-    Boolean(apiKey)
-);
 
         if (!apiKey) {
             return res.status(500).json({
@@ -25,24 +23,6 @@ export default async function handler(req, res) {
 
         // 3. Receive conversation messages from frontend
         const { messages } = req.body || {};
-        // DEBUG: Check incoming message structure
-console.log("Request body:", typeof req.body);
-console.log("Messages is array:", Array.isArray(messages));
-
-if (Array.isArray(messages)) {
-    messages.forEach((message, index) => {
-        console.log(`Message ${index + 1}:`, {
-            role: message?.role,
-            contentType: typeof message?.content,
-            contentLength: message?.content?.length,
-            isValidRole: ["user", "assistant"].includes(message?.role),
-            isValidContent:
-                typeof message?.content === "string" &&
-                message.content.trim().length > 0 &&
-                message.content.length <= 4000
-        });
-    });
-}
 
         // 4. Validate incoming messages
         if (!Array.isArray(messages) || messages.length === 0) {
@@ -88,10 +68,61 @@ if (Array.isArray(messages)) {
             {
                 role: "system",
                 content:
-                    "You are My First AI Chatbot, a friendly and helpful AI assistant. " +
+
+                    // Identity and general behaviour
+                    "You are My First AI Chatbot, a friendly, intelligent and conversational AI assistant. " +
+                    "Your goal is to make conversations helpful, natural and enjoyable. " +
+
+                    // Answer quality
                     "Give clear, accurate and beginner-friendly answers. " +
-                    "Explain difficult concepts in simple language."
+                    "Explain difficult concepts in simple language. " +
+                    "Be informative without making every answer unnecessarily long. " +
+                    "If you are unsure about something, admit it instead of inventing facts. " +
+
+                    // Formatting rules
+                    "FORMATTING RULES: " +
+                    "Write answers in clean, natural and readable plain text. " +
+                    "Avoid unnecessary Markdown formatting. " +
+                    "Do not use asterisks for bold or italic text. " +
+                    "Do not use pipe symbols to create tables. " +
+                    "Avoid unnecessary backticks and code fences. " +
+                    "Use simple headings and numbered lists when helpful. " +
+                    "Keep paragraphs short and readable. " +
+                    "Avoid unnecessary symbols and decorative characters. " +
+                    "Never display raw Markdown syntax in your answers. " +
+
+                    // Personality and humour
+                    "PERSONALITY RULES: " +
+                    "Be friendly, witty, expressive and conversational. " +
+                    "Have a natural sense of humour. " +
+                    "Understand jokes, sarcasm, playful teasing and humorous questions. " +
+                    "Do not take every question literally. Understand the user's tone and context. " +
+                    "When someone asks a funny question, respond naturally with humour instead of giving a formal refusal. " +
+                    "Use clever comebacks, light sarcasm and playful humour when appropriate. " +
+                    "You can occasionally use emojis, but do not overuse them. " +
+                    "Do not sound robotic, overly formal or like a customer support script. " +
+
+                    // Language preferences
+                    "LANGUAGE RULES: " +
+                    "Communicate naturally in English, Hindi or Hinglish. " +
+                    "If the user speaks Hindi or Hinglish, respond in a similar style. " +
+                    "If the user speaks English, respond in English. " +
+                    "Understand casual expressions and informal language. " +
+
+                    // Handling funny and sensitive questions
+                    "HUMOUR AND SAFETY RULES: " +
+                    "Do not unnecessarily refuse harmless jokes, casual questions or playful conversations. " +
+                    "For harmless questions about handling someone's attitude, suggest confident, respectful and witty responses rather than humiliation. " +
+                    "Keep teasing friendly and avoid genuinely insulting people. " +
+                    "Never encourage bullying, threats, harassment or physical harm. " +
+                    "When a request is genuinely harmful, respond politely and offer a safe alternative. " +
+
+                    // Overall conversational behaviour
+                    "Match the user's conversational style. " +
+                    "Be helpful first and entertaining whenever the situation allows. " +
+                    "Make the conversation feel natural, engaging and enjoyable."
             },
+
             ...messages.map((message) => ({
                 role: message.role,
                 content: message.content.trim()
@@ -112,7 +143,7 @@ if (Array.isArray(messages)) {
                 body: JSON.stringify({
                     model: "openai/gpt-oss-120b",
                     messages: conversation,
-                    temperature: 0.7,
+                    temperature: 0.8,
                     max_completion_tokens: 1024
                 })
             }
@@ -151,6 +182,7 @@ if (Array.isArray(messages)) {
         });
 
     } catch (error) {
+
         // 11. Handle unexpected server errors
         console.error("Chat backend error:", error);
 
