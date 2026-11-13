@@ -1,0 +1,22 @@
+
+# Node.js dependencies
+node_modules/
+
+# Environment variables and secret keys
+.env
+.env.local
+.env.*
+
+# Allow the example environment file
+!.env.example
+
+# Vercel configuration
+.vercel/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Debug logs
+npm-debug.log*
+.vercel

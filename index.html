@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Character encoding -->
+    <meta charset="UTF-8">
+
+    <!-- Responsive design for mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Website title -->
+    <title>My First AI Chatbot</title>
+
+    <!-- Website description -->
+    <meta
+        name="description"
+        content="My First AI Chatbot - A beginner-friendly AI chatbot powered by Groq."
+    >
+
+    <!-- Connect external CSS file -->
+    <link rel="stylesheet" href="src/css/style.css">
+
+</head>
+
+<body>
+
+    <!-- Main Chatbot Container -->
+    <div class="chat-container">
+
+
+        <!-- Chatbot Header -->
+        <header class="chat-header">
+
+            <div class="bot-icon">
+                🤖
+            </div>
+
+            <div class="header-text">
+
+                <h1>My First AI Chatbot</h1>
+
+                <p>Your friendly AI assistant</p>
+
+            </div>
+
+        </header>
+
+
+        <!-- Chat Messages Area -->
+        <main
+            class="chat-messages"
+            id="chat-messages"
+            aria-live="polite"
+            aria-label="Chat conversation"
+        >
+
+            <!-- JavaScript displays messages here -->
+
+        </main>
+
+
+        <!-- Chat Input Area -->
+        <form class="chat-input-area" id="chat-form">
+
+            <input
+                type="text"
+                id="user-input"
+                placeholder="Type your message here..."
+                autocomplete="off"
+                aria-label="Enter your message"
+                maxlength="4000"
+                required
+            >
+
+            <button
+                type="submit"
+                id="send-button"
+            >
+                Send
+            </button>
+
+        </form>
+
+
+    </div>
+
+
+    <!-- Connect external JavaScript file -->
+    <script src="src/js/script.js"></script>
+
+</body>
+
+</html>
